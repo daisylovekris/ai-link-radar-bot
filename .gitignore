@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+links.md
+links.local.md
+*.log
+*.db
+__pycache__/
+*.pyc
+.DS_Store
+.idea/
+.vscode/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.venv/
