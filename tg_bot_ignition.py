@@ -247,6 +247,24 @@ def get_indexed_links_by_platform(platform_name: str) -> list[tuple[int, str]]:
     ]
 
 
+def classify_title_fetch_failure(message: str) -> str:
+    lower = message.lower()
+
+    if "timed out" in lower or "timeout" in lower:
+        return "请求超时"
+
+    if "403" in lower or "forbidden" in lower:
+        return "页面拒绝访问"
+
+    if "404" in lower or "not found" in lower:
+        return "页面不存在"
+
+    if "没有在网页中找到标题" in lower or "没有找到标题" in lower or "没有返回内容" in lower:
+        return "页面中没有可识别标题"
+
+    return "网络或页面访问异常"
+
+
 def extract_title_from_html(page_html: str) -> str:
     match = re.search(r"<title[^>]*>(.*?)</title>", page_html, flags=re.IGNORECASE | re.DOTALL)
 
@@ -1011,19 +1029,25 @@ def handle_tag(message):
 
 @bot.message_handler(commands=["fetch_title"])
 def handle_fetch_title(message):
-    card_index, warning = parse_fetch_title_index(message.text)
+    try:
+        card_index, warning = parse_fetch_title_index(message.text)
 
-    if warning:
-        bot.reply_to(message, warning)
-        return
+        if warning:
+            bot.reply_to(message, warning)
+            return
 
-    success, result = update_card_title(card_index)
+        success, result = update_card_title(card_index)
 
-    if not success:
-        bot.reply_to(message, result)
-        return
+        if not success:
+            reason = classify_title_fetch_failure(result)
+            print(f"[标题抓取失败] {result}")
+            bot.reply_to(message, f"标题抓取失败（{reason}）。请稍后重试。")
+            return
 
-    bot.reply_to(message, f"已更新第 {card_index} 条链接的标题：\n{result}")
+        bot.reply_to(message, f"已更新第 {card_index} 条链接的标题：\n{result}")
+    except Exception as exc:
+        print(f"[handle_fetch_title 异常] {type(exc).__name__}: {exc}")
+        bot.reply_to(message, "标题抓取发生异常，请稍后重试。")
 
 
 @bot.message_handler(commands=["note"])
@@ -1084,42 +1108,47 @@ def handle_unknown_command(message):
 
 @bot.message_handler(func=lambda message: True)
 def handle_message(message):
-    text = message.text or ""
+    try:
+        text = message.text or ""
 
-    match = X_LINK_PATTERN.search(text) or ANY_LINK_PATTERN.search(text)
+        match = X_LINK_PATTERN.search(text) or ANY_LINK_PATTERN.search(text)
 
-    if match:
-        link = match.group(0)
-        username = message.from_user.username
+        if match:
+            link = match.group(0)
+            username = message.from_user.username
 
-        if is_duplicate_link(link):
-            print("\n[重复链接]")
+            if is_duplicate_link(link):
+                print("\n[重复链接]")
+                print(f"来自: {username}")
+                print(f"链接: {link}")
+
+                bot.reply_to(message, "这条链接已经保存过啦，不重复写入。")
+                return
+
+            save_link(link, username)
+
+            print("\n[识别到链接]")
             print(f"来自: {username}")
             print(f"链接: {link}")
+            print(f"已保存到: {LINKS_FILE}")
 
-            bot.reply_to(message, "这条链接已经保存过啦，不重复写入。")
-            return
+            fetch_success, fetch_result = fetch_page_title_with_fallback(link)
 
-        save_link(link, username)
-
-        print("\n[识别到链接]")
-        print(f"来自: {username}")
-        print(f"链接: {link}")
-        print(f"已保存到: {LINKS_FILE}")
-
-        fetch_success, fetch_result = fetch_page_title_with_fallback(link)
-
-        if fetch_success:
-            update_card_title_by_link(link, fetch_result)
-            bot.reply_to(message, f"已保存链接，标题：{fetch_result}")
+            if fetch_success:
+                update_card_title_by_link(link, fetch_result)
+                bot.reply_to(message, f"已保存链接，标题：{fetch_result}")
+            else:
+                reason = classify_title_fetch_failure(fetch_result)
+                print(f"[标题抓取失败] {fetch_result}")
+                bot.reply_to(message, f"已保存 URL，但自动抓取标题失败（{reason}）。稍后可用 /fetch_title 重试。")
         else:
-            print(f"[标题抓取失败] {fetch_result}")
-            bot.reply_to(message, "已保存链接，自动抓取标题失败，可稍后用 /fetch_title 重试。")
-    else:
-        print("\n[收到非链接消息]")
-        print(f"内容: {text}")
+            print("\n[收到非链接消息]")
+            print(f"内容: {text}")
 
-        bot.reply_to(message, "宝宝，请发一个链接给我。")
+            bot.reply_to(message, "宝宝，请发一个链接给我。")
+    except Exception as exc:
+        print(f"[handle_message 异常] {type(exc).__name__}: {exc}")
+        bot.reply_to(message, "消息处理发生异常，本次内容可能未完整处理，请稍后重试。")
 
 
 while True:
