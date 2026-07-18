@@ -11,8 +11,8 @@ This is the first public release.
 ### Core functionality
 
 - **Telegram URL collection** — The bot accepts any message containing a URL and turns it into a structured card.
-- **Local Markdown card storage** — Each link is stored as a Markdown block in a local file. No database, no cloud.
-- **Duplicate detection** — Cards are checked before saving to avoid accidental duplicates.
+- **Local Markdown card storage** — Each link is stored as a Markdown block in a single local file. The storage is file-based, local-first, and designed for personal use.
+- **Substring-based duplicate detection** — Before saving, the bot checks whether the URL already appears as a substring in the saved file. This prevents many accidental duplicates but can occasionally flag a shorter URL as a duplicate of a longer one. See Known limitations.
 - **Platform detection** — The source host is parsed and tagged automatically (e.g. `x.com`, `github.com`, `bbc.com`).
 - **Automatic title fetching** — The bot visits the target page and writes the title into the saved card.
 - **Jina Reader fallback** — When a direct fetch fails, the bot retries through an optional fallback reader for pages with login walls or anti-scraping behavior.
