@@ -61,7 +61,7 @@ The following were added or improved during Build Week to prepare a public, revi
 - **Three-minute demo script** — `docs/demo-script.md` with timing, narration, and screen cues.
 - **Safer title-fetching error handling** — A safe failure classification function and handler-level exception boundaries were added. The existing fallback order was preserved.
 - **Import-safe run_bot entry point** — The polling loop was extracted into a `run_bot()` function and guarded with `if __name__ == "__main__"`. The module can now be imported without starting polling, which enables testing and future reuse.
-- **URL parsing and deduplication tests** — `tests/test_url_parsing.py` and `tests/test_dedup.py` cover regex behavior, platform detection, card parsing, and deduplicate logic using temporary files and monkeypatching. Fake credentials are injected through `tests/conftest.py`.
+- **URL parsing and deduplication tests** — `tests/test_url_parsing.py` and `tests/test_dedup.py` cover regex behavior, platform detection, card parsing, and deduplication logic using temporary files and monkeypatching. Fake credentials are injected through `tests/conftest.py`.
 - **Privacy-aware GitHub Issue Forms** — `.github/ISSUE_TEMPLATE/` contains three forms, all with safety reminders and a required privacy confirmation checkbox.
 - **Release documentation** — This document.
 
