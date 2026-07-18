@@ -1,0 +1,60 @@
+name: Documentation improvement
+description: Report unclear, missing, or incorrect documentation
+title: "[Docs]: "
+labels:
+  - documentation
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Found something in the docs that is unclear, missing, or wrong? Let us know.
+        **⚠️ Please do not include real bot tokens, private URLs, cookies, credentials, or unredacted logs.**
+
+  - type: textarea
+    id: location
+    attributes:
+      label: Documentation location
+      description: Which file, section, or page needs improvement?
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-problem
+    attributes:
+      label: Current problem
+      description: What is unclear, missing, or incorrect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested-improvement
+    attributes:
+      label: Suggested improvement
+      description: What should the documentation say instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-wording
+    attributes:
+      label: Proposed wording or example
+      description: If you have draft text or an example, paste it here.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Add any other context or references.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      description: Confirm that the report contains no sensitive information.
+      options:
+        - label: I have removed tokens, private URLs, credentials, and other sensitive information.
+          required: true
