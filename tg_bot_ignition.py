@@ -1151,18 +1151,23 @@ def handle_message(message):
         bot.reply_to(message, "消息处理发生异常，本次内容可能未完整处理，请稍后重试。")
 
 
-while True:
-    try:
-        bot.polling(non_stop=True, timeout=10, long_polling_timeout=20)
-    except requests.exceptions.ReadTimeout:
-        print("[网络提示] Telegram 连接超时，5 秒后自动重试...")
-        time.sleep(5)
-    except requests.exceptions.ConnectionError:
-        print("[网络提示] Telegram 连接中断，5 秒后自动重试...")
-        time.sleep(5)
-    except requests.exceptions.SSLError:
-        print("[网络提示] Telegram SSL 连接波动，5 秒后自动重试...")
-        time.sleep(5)
-    except KeyboardInterrupt:
-        print("\n[系统状态] 收到停止指令，机器人已关闭。")
-        break
+def run_bot() -> None:
+    while True:
+        try:
+            bot.polling(non_stop=True, timeout=10, long_polling_timeout=20)
+        except requests.exceptions.ReadTimeout:
+            print("[网络提示] Telegram 连接超时，5 秒后自动重试...")
+            time.sleep(5)
+        except requests.exceptions.ConnectionError:
+            print("[网络提示] Telegram 连接中断，5 秒后自动重试...")
+            time.sleep(5)
+        except requests.exceptions.SSLError:
+            print("[网络提示] Telegram SSL 连接波动，5 秒后自动重试...")
+            time.sleep(5)
+        except KeyboardInterrupt:
+            print("\n[系统状态] 收到停止指令，机器人已关闭。")
+            break
+
+
+if __name__ == "__main__":
+    run_bot()
