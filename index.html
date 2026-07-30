@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07080c">
+  <meta name="description" content="NOIR//MUSE 私人灵感收藏库">
+  <title>NOIR//MUSE — 灵感收藏库</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="noise"></div>
+
+  <section id="authView" class="auth-view">
+    <div class="auth-glow glow-a"></div>
+    <div class="auth-glow glow-b"></div>
+    <article class="auth-card glass">
+      <div class="brand"><span>✦</span><strong>NOIR//MUSE</strong></div>
+      <p class="kicker">PRIVATE VISUAL ARCHIVE</p>
+      <h1 id="authHeadline">保存你的<br>视觉宇宙。</h1>
+      <p id="authIntro" class="auth-intro">把网页、图片、设计稿和一闪而过的念头，归入同一片私人画布。</p>
+      <form id="authForm" class="stack">
+        <label>邮箱<input id="email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
+        <label>密码<input id="password" type="password" autocomplete="current-password" minlength="6" required placeholder="至少 6 位"></label>
+        <button id="authSubmit" class="btn btn-acid" type="submit">登录</button>
+      </form>
+      <p class="auth-switch"><span id="authHint">还没有账号？</span> <button id="authToggle" class="text-btn" type="button">创建账号</button></p>
+      <p class="tiny">数据存放在你的 Supabase 项目中，并由行级权限隔离。</p>
+    </article>
+  </section>
+
+  <div id="appView" class="app hidden">
+    <aside class="sidebar glass">
+      <div>
+        <div class="brand"><span>✦</span><strong>NOIR//MUSE</strong></div>
+        <p class="kicker">INSPIRATION LIBRARY</p>
+      </div>
+      <button id="newItemBtn" class="btn btn-acid wide">＋ 新增灵感</button>
+      <nav>
+        <p class="nav-label">收藏夹</p>
+        <div id="collectionNav" class="collection-nav"></div>
+        <button id="newCollectionBtn" class="nav-add" type="button">＋ 新建收藏夹</button>
+      </nav>
+      <div class="sidebar-foot">
+        <div id="accountChip" class="account-chip"></div>
+        <button id="logoutBtn" class="btn btn-ghost wide" type="button">退出登录</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <label class="search-box"><span>⌕</span><input id="searchInput" type="search" placeholder="搜索标题、描述或来源"></label>
+        <button id="mobileNewBtn" class="btn btn-acid" type="button">新增灵感</button>
+      </header>
+
+      <section class="hero glass">
+        <div class="hero-orbit"></div>
+        <p class="kicker acid">CURATE YOUR VISUAL LANGUAGE</p>
+        <h2>灵感，不该<br>沉入信息流。</h2>
+        <p>把值得留下的画面、链接与念头收藏成可检索、可分类、可反复调用的私人素材库。</p>
+      </section>
+
+      <section class="section-head">
+        <div>
+          <p class="kicker">YOUR ARCHIVE</p>
+          <h3 id="sectionTitle">全部灵感</h3>
+          <p id="sectionMeta" class="muted">正在读取私人收藏。</p>
+        </div>
+        <div class="segmented">
+          <button class="segment active" data-mode="all" type="button">全部</button>
+          <button class="segment" data-mode="favorite" type="button">已收藏</button>
+        </div>
+      </section>
+
+      <section id="cardGrid" class="card-grid"></section>
+      <section id="emptyState" class="empty hidden">
+        <span>✦</span>
+        <h4>这里还很安静。</h4>
+        <p>添加第一条灵感，让你的私人档案开始生长。</p>
+        <button id="emptyNewBtn" class="btn btn-acid" type="button">添加灵感</button>
+      </section>
+    </main>
+  </div>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <article class="modal-card glass">
+      <header class="modal-head">
+        <div><p class="kicker acid">NEW INSPIRATION</p><h3>新增灵感</h3></div>
+        <button id="closeModalBtn" class="round-btn" type="button">×</button>
+      </header>
+      <form id="itemForm" class="form-grid">
+        <label class="full">标题 *<input id="itemTitle" maxlength="200" required placeholder="例如：霓虹渐变与杂志排版"></label>
+        <label>来源类型<select id="itemType">
+          <option value="web">网页</option><option value="image">图片</option><option value="figma">Figma</option>
+          <option value="github">GitHub</option><option value="video">视频</option><option value="social">社交平台</option>
+          <option value="book">书籍</option><option value="other">其他</option>
+        </select></label>
+        <label>收藏夹<select id="itemCollection"></select></label>
+        <label class="full">描述<textarea id="itemDescription" placeholder="为什么值得留下？"></textarea></label>
+        <label class="full">来源链接<input id="itemSource" type="url" placeholder="https://"></label>
+        <label class="full">公开图片地址<input id="itemImageUrl" type="url" placeholder="https://"></label>
+        <label class="full">或上传图片<input id="itemImageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif"></label>
+        <label>主题色<input id="itemColor" class="color-input" type="color" value="#7546ff"></label>
+        <label class="check-row"><input id="itemFavorite" type="checkbox"> 加入收藏</label>
+        <div class="form-actions full">
+          <button id="cancelModalBtn" class="btn btn-ghost" type="button">取消</button>
+          <button id="saveItemBtn" class="btn btn-acid" type="submit">保存灵感</button>
+        </div>
+      </form>
+    </article>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
